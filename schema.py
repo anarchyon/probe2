@@ -1,5 +1,5 @@
 import datetime
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel
 
 class Employee(BaseModel):
     """Класс описывающий сотрудника"""
