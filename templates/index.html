@@ -25,7 +25,10 @@
                 <td>{{employee.last_name}}</td>
                 <td>{{employee.address}}</td>
                 <td>{{employee.birthdate}}</td>
-                <td><button type="button">Редактировать</button><button type="button">Удалить</button></td>
+                <td>
+                    <button type="button" class="btn btn-warning">Редактировать</button>
+                    <button type="button" class="btn btn-danger">Удалить</button>
+                </td>
             </tr>
         {% endfor %}
         </table>
