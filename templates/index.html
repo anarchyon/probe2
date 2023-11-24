@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <link href="{{ url_for('static', path='/css/style.css') }}" rel="stylesheet">
+    </head>
+    <body>
+        <h1>Список сотрудников</h1>
+        <p>{{data[0].birthdate}}</p>
+        <table border="1" cellpadding="10">
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Адрес</th>
+                <th>Дата рождения</th>
+                <th>Действия</th>
+            </tr>
+        {% for employee in data%}
+            <tr>
+                <td>{{employee.staff_id}}</td>
+                <td>{{employee.first_name}}</td>
+                <td>{{employee.last_name}}</td>
+                <td>{{employee.address}}</td>
+                <td>{{employee.birthdate}}</td>
+                <td><button>Редактировать</button><button>Удалить</button></td>
+            </tr>
+        {% endfor %}
+        </table>
+    </body>
+</htnl>
