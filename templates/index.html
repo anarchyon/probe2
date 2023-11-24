@@ -26,14 +26,14 @@
                 <td>{{employee.address}}</td>
                 <td>{{employee.birthdate}}</td>
                 <td>
-                    <button type="button" class="btn btn-warning">Редактировать</button>
-                    <button type="button" class="btn btn-danger">Удалить</button>
+                    <button type="button" class="btn btn-outline-dark">Редактировать</button>
+                    <button type="button" class="btn btn-outline-danger">Удалить</button>
                 </td>
             </tr>
         {% endfor %}
         </table>
         <p></p>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">Добавить нового сотрудника</button>
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#myModal">Добавить нового сотрудника</button>
         <div class="modal" id="myModal" data-bs-backdrop="static" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -68,10 +68,13 @@
                                 <div class="col-md-8">
                                     <input type="date" id="birthdate" name="birthdate">
                                 </div>
+                                <div class="col-md-8">
+                                    <button type="submit" class="btn btn-outline-info">Сохранить</button>
+                                </div>
                             </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Закрыть</button>
                     </div>
     </body>
 </htnl>
