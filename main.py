@@ -30,6 +30,10 @@ def root(request: Request, db: Session = Depends(get_db_session)):
         employee.birthdate = employee.birthdate.strftime("%d-%m-%Y")
     return templates.TemplateResponse("index.html",{"request": request, "data": staff})
 
+@app.post("/add", response_class=HTMLResponse)
+def add_employee():
+    pass
+
 # @app.get("/get-staff")
 # def get_staff():
 #     connection = make_db_connection()
