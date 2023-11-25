@@ -28,7 +28,7 @@ def root(request: Request, db: Session = Depends(get_db_session)):
     staff = db.query(models.Staff).order_by(models.Staff.staff_id).all()
     for employee in staff:
         employee.birthdate = employee.birthdate.strftime("%d-%m-%Y")
-    return templates.TemplateResponse("index.html",{"request": request, "data": staff})
+    return templates.TemplateResponse("index.html", {"request": request, "data": staff})
 
 @app.post("/add")
 async def add_employee(db: Session = Depends(get_db_session), 
@@ -57,7 +57,7 @@ async def delete_employee(staff_id: int, db:Session = Depends(get_db_session)):
     response = RedirectResponse("/", status_code=303)
     return response
 
-@app.post("/get-person/{staff_id}", response_class=HTMLResponse)
-async def get_person(last_name: str):
-    
-    return ""
+@app.post("/get/{staff_id}", response_class=HTMLResponse)
+async def get_person(request: Request, staff_id: int, db: Session = Depends(get_db_session)):
+    employee = db.query(models.Staff).get(staff_id)
+    return templates.TemplateResponse("index.html", {"request": request, "employee": employee})
