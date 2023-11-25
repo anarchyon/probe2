@@ -2,7 +2,7 @@ from sqlalchemy import String, Column, Integer, Date
 
 from database import Base
 
-class Staff_DB(Base):
+class Staff(Base):
     __tablename__ = "staff"
     
     staff_id = Column(Integer, primary_key=True, index=True)
