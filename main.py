@@ -30,12 +30,12 @@ def root(request: Request, db: Session = Depends(get_db_session)):
         employee.birthdate = employee.birthdate.strftime("%d-%m-%Y")
     return templates.TemplateResponse("index.html",{"request": request, "data": staff})
 
-@app.post("/add", response_class=HTMLResponse)
+@app.post("/add")
 async def add_employee(db: Session = Depends(get_db_session), 
                  first_name = Form(...),
                  last_name = Form(...),
                  address = Form(...),
-                 birthdate = Form(...)
+                 birthdate = Form(...),
                  ):
     employee = models.Staff(
                         first_name = first_name,
@@ -49,37 +49,15 @@ async def add_employee(db: Session = Depends(get_db_session),
     response = RedirectResponse("/", status_code=303)
     return response
 
-# @app.get("/get-staff")
-# def get_staff():
-#     connection = make_db_connection()
-#     cursor = connection.cursor()
-#     cursor.execute("SELECT * FROM staff ORDER BY staff_id")
-#     result = cursor.fetchall()
-#     json_data = []
-#     for row in result:
-#         json_data.append(dict(zip([column[0] for column in cursor.description], row)))
-#     cursor.close()
-#     connection.close()
-#     return json_data
+@app.post("/delete/{staff_id}")
+async def delete_employee(staff_id: int, db:Session = Depends(get_db_session)):
+    deleted_employee = db.query(models.Staff).get(staff_id)
+    db.delete(deleted_employee)
+    db.commit()
+    response = RedirectResponse("/", status_code=303)
+    return response
 
-
-# @app.get("/get-person/{last_name}")
-# def get_person(last_name: str):
-#     connection = make_db_connection()
-#     cursor = connection.cursor()
-#     cursor.execute(f"SELECT * FROM staff WHERE last_name = '{last_name}'")
-#     result = cursor.fetchall()
-#     json_data = []
-#     for row in result:
-#         json_data.append(dict(zip([column[0] for column in cursor.description], row)))
-#     cursor.close()
-#     connection.close()
-#     return json_data
-
-# @app.post("/add-person")
-# def add_person(parameters: Employee):
-#     person_dict = {}
-#     person_dict['Имя'] = parameters.first_name
-#     person_dict['Фамилия'] = parameters.last_name
-#     person_dict['Адрес'] = parameters.address
-#     person_dict['Год рождения'] = parameters.birthdate
+@app.post("/get-person/{staff_id}", response_class=HTMLResponse)
+async def get_person(last_name: str):
+    
+    return ""

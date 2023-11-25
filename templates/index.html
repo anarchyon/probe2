@@ -16,7 +16,7 @@
                 <th>Фамилия</th>
                 <th>Адрес</th>
                 <th>Дата рождения</th>
-                <th>Действия</th>
+                <th colspan="2" align="center">Действия</th>
             </tr>
         {% for employee in data%}
             <tr>
@@ -26,8 +26,14 @@
                 <td>{{employee.address}}</td>
                 <td>{{employee.birthdate}}</td>
                 <td>
-                    <button type="button" class="btn btn-outline-dark">Редактировать</button>
-                    <button type="button" class="btn btn-outline-danger">Удалить</button>
+                    <form>
+                        <button type="button" class="btn btn-outline-dark btn-sm">Редактировать</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/delete/{{employee.staff_id}}" method="POST">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Удалить</button>
+                    </form>
                 </td>
             </tr>
         {% endfor %}
@@ -69,12 +75,40 @@
                                     <input type="date" id="birthdate" name="birthdate">
                                 </div>
                                 <div class="col-md-8">
-                                    <button type="submit" class="btn btn-outline-info">Сохранить</button>
+                                    <button type="submit" class="btn btn-outline-info" value="save" name="save_buton">Сохранить</button>
                                 </div>
                             </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Закрыть</button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопка-триггер модального окна -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Запустите демо модального окна
+        </button>
+        
+        <!-- Модальное окно -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Заголовок модального окна</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                ...
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary">Сохранить изменения</button>
+                </div>
+            </div>
+            </div>
+        </div>
     </body>
 </htnl>
