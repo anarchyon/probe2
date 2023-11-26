@@ -3,7 +3,6 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
         <link href="{{ url_for('static', path='/css/style.css') }}" rel="stylesheet">
     </head>
     <body>
@@ -31,9 +30,9 @@
                     </form>
                 </td>
                 <td>
-                    <form action="/get/{{employee.staff_id}}" method="POST">
-                        <button type="submit" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete">Удалить</button>
-                    </form>
+                    <!--<form action="/get/{{employee.staff_id}}" method="POST"><-->
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick="submitRequest('{{employee.staff_id}}')">Удалить</button>
+                    <!--</form><-->
                 </td>
             </tr>
         {% endfor %}
@@ -96,31 +95,31 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="/delete/{{employee.staff_id ignore missing}}" method="POST" enctype="application/x-www-form-urlencoded">
+                        <form action="" method="POST" enctype="application/x-www-form-urlencoded">
                             <div class="row">
                                 <div class="col-md-4" align="right">
                                     <label for="first_name">Имя:</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="first_name" name="first_name" disabled>{{employee.first_name}}
+                                    <input type="text" id="first_name" name="first_name" disabled value="bla">
                                 </div>
                                 <div class="col-md-4" align="right">
                                     <label for="last_name">Фамилия:</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="last_name" name="last_name" disabled>{{employee.last_name}}
+                                    <input type="text" id="last_name" name="last_name" disabled>
                                 </div>
                                 <div class="col-md-4" align="right">
                                     <label for="address">Адрес:</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="address" name="address" disabled>{{employee.address}}
+                                    <input type="text" id="address" name="address" disabled>
                                 </div>
                                 <div class="col-md-4" align="right">
                                     <label for="birthdate">Дата рождения:</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="date" id="birthdate" name="birthdate" disabled>{{employee.birthdate}}
+                                    <input type="date" id="birthdate" name="birthdate" disabled>
                                 </div>
                                 <!-- <div class="col-md-8">
                                     <button type="submit" class="btn btn-outline-info" value="save" name="save_buton">Удалить</button>
@@ -135,4 +134,7 @@
             </div>
         </div>
     </body>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', path='/js/script.js') }}"></script>
 </htnl>
