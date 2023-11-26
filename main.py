@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.encoders import jsonable_encoder
 from starlette.responses import RedirectResponse
 from sqlalchemy.orm import Session
+import json
 
 import models, schema
 from database import SessionLocal, engine
@@ -26,6 +27,7 @@ def get_db_session():
 @app.get("/", response_class=HTMLResponse)
 def root(request: Request, db: Session = Depends(get_db_session)):
     staff = db.query(models.Staff).order_by(models.Staff.staff_id).all()
+    print(staff[0])
     for employee in staff:
         employee.birthdate = employee.birthdate.strftime("%d-%m-%Y")
     return templates.TemplateResponse("index.html", {"request": request, "data": staff})
@@ -57,7 +59,8 @@ async def delete_employee(staff_id: int, db:Session = Depends(get_db_session)):
     response = RedirectResponse("/", status_code=303)
     return response
 
-@app.post("/get/{staff_id}", response_class=HTMLResponse)
+@app.get("/get/{staff_id}")
 async def get_person(request: Request, staff_id: int, db: Session = Depends(get_db_session)):
     employee = db.query(models.Staff).get(staff_id)
-    return templates.TemplateResponse("index.html", {"request": request, "employee": employee})
+    empl = jsonable_encoder(employee)
+    return empl
