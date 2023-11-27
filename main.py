@@ -26,9 +26,12 @@ def get_db_session():
         db.close()
 
 @app.get("/", response_class=HTMLResponse)
-def root(request: Request, db: Session = Depends(get_db_session)):
+def root(request: Request):
+    return templates.TemplateResponse("index0.html", {"request": request})
+
+@app.get("/get-staff", response_class=HTMLResponse)
+def get_staff(request: Request, db: Session = Depends(get_db_session)):
     staff = db.query(models.Staff).order_by(models.Staff.staff_id).all()
-    print(staff[0])
     for employee in staff:
         employee.birthdate = employee.birthdate.strftime("%d-%m-%Y")
     return templates.TemplateResponse("index.html", {"request": request, "data": staff})
@@ -49,7 +52,7 @@ async def add_employee(db: Session = Depends(get_db_session),
     db.add(employee)
     db.commit()
     db.refresh(employee)
-    response = RedirectResponse("/", status_code=303)
+    response = RedirectResponse("/get-staff", status_code=303)
     return response
 
 @app.post("/delete/{staff_id}")
@@ -57,7 +60,7 @@ async def delete_employee(staff_id: int, db:Session = Depends(get_db_session)):
     deleted_employee = db.query(models.Staff).get(staff_id)
     db.delete(deleted_employee)
     db.commit()
-    response = RedirectResponse("/", status_code=303)
+    response = RedirectResponse("/get-staff", status_code=303)
     return response
 
 @app.get("/get/{staff_id}")
@@ -80,5 +83,5 @@ async def update_employee(staff_id: int, db: Session = Depends(get_db_session),
     updated_employee.birthdate = birthdate
     db.commit()
     db.refresh(updated_employee)
-    response = RedirectResponse("/", status_code=303)
+    response = RedirectResponse("/get-staff", status_code=303)
     return response
