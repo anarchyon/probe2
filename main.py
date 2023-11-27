@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.encoders import jsonable_encoder
 from starlette.responses import RedirectResponse
 from sqlalchemy.orm import Session
+from sqlalchemy import update
 import json
 
 import models, schema
@@ -64,3 +65,20 @@ async def get_person(request: Request, staff_id: int, db: Session = Depends(get_
     employee = db.query(models.Staff).get(staff_id)
     empl = jsonable_encoder(employee)
     return empl
+
+@app.post("/update/{staff_id}")
+async def update_employee(staff_id: int, db: Session = Depends(get_db_session),
+                            first_name = Form(...),
+                            last_name = Form(...),
+                            address = Form(...),
+                            birthdate = Form(...),
+                            ):
+    updated_employee = db.query(models.Staff).get(staff_id)
+    updated_employee.first_name = first_name
+    updated_employee.last_name = last_name
+    updated_employee.address = address
+    updated_employee.birthdate = birthdate
+    db.commit()
+    db.refresh(updated_employee)
+    response = RedirectResponse("/", status_code=303)
+    return response
