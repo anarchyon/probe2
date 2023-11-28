@@ -9,11 +9,11 @@
         <h1>Список сотрудников</h1>
         <table border="1" cellpadding="10">
             <tr>
-                <th>ID</th>
-                <th>Имя</th>
-                <th>Фамилия</th>
-                <th>Адрес</th>
-                <th>Дата рождения</th>
+                <th onclick="getStaff('staff_id')">ID</th>
+                <th onclick="getStaff('first_name')">Имя</th>
+                <th onclick="getStaff('last_name')">Фамилия</th>
+                <th onclick="getStaff('address')">Адрес</th>
+                <th onclick="getStaff('birthdate')">Дата рождения</th>
                 <th colspan="2" align="center">Действия</th>
             </tr>
         {% for employee in data%}

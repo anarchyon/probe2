@@ -7,6 +7,7 @@ const DELETE_ACTION = "/delete/";
 const ADD_BUTTON = "Добавить сотрудника";
 const EDIT_BUTTON = "Обновить информацию";
 const DELETE_BUTTON = "Удалить сотрудника";
+const GET_STAFF = "/get-staff/"
 
 function enableFields() {
     document.getElementById("first_name").disabled = false;
@@ -68,4 +69,10 @@ async function deleteEmployee(staff_id) {
     let deleteAction = DELETE_ACTION + staff_id;
     fillModalWindow(DELETE_TITLE, deleteAction, DELETE_BUTTON, employee);
     disableFields();
+}
+
+async function getStaff(orderBy) {
+    let urlForGet = GET_STAFF + "?order=" + orderBy;
+    console.log(urlForGet);
+    fetch(urlForGet).then(response => window.location.replace(response.url));
 }
