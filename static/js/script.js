@@ -7,7 +7,8 @@ const DELETE_ACTION = "/delete/";
 const ADD_BUTTON = "Добавить сотрудника";
 const EDIT_BUTTON = "Обновить информацию";
 const DELETE_BUTTON = "Удалить сотрудника";
-const GET_STAFF = "/get-staff/"
+const urlForGetStaff = "/get-staff/?order="
+const urlForGet = "/get/"
 
 function enableFields() {
     document.getElementById("first_name").disabled = false;
@@ -24,7 +25,6 @@ function disableFields() {
 }
 
 function fillModalWindow(title, stringAction, buttonText, employee) {
-    console.log(employee===null)
     document.getElementById("modalTitle").innerText=title
     document.getElementById("action").action = stringAction;
     document.getElementById("buttonAccept").innerText = buttonText;
@@ -42,12 +42,9 @@ function fillModalWindow(title, stringAction, buttonText, employee) {
 }
 
 async function getEmployee(staff_id){
-    let response = await fetch("/get/" + staff_id);
-    if(response.ok) {
-        let employeeJson = await response.json();
-        console.log(employeeJson.last_name)
-        return employeeJson;
-    }
+    return fetch(urlForGet + staff_id).then(response => {
+        return response.json();
+    })
 }
 
 function addEmployee() {
@@ -56,23 +53,29 @@ function addEmployee() {
 }
 
 async function editEmployee(staff_id) {
-    let employee = await getEmployee(staff_id);
-    console.log(employee.birthdate)
     let editAction = EDIT_ACTION  + staff_id;
-    fillModalWindow(EDIT_TITLE, editAction, EDIT_BUTTON, employee);
+    getEmployee(staff_id)
+        .then(employee => {
+            fillModalWindow(EDIT_TITLE, editAction, EDIT_BUTTON, employee);
+        })
     enableFields();
 }
 
 async function deleteEmployee(staff_id) {
-    let employee = await getEmployee(staff_id);
-    console.log(employee.last_name)
     let deleteAction = DELETE_ACTION + staff_id;
-    fillModalWindow(DELETE_TITLE, deleteAction, DELETE_BUTTON, employee);
+    getEmployee(staff_id)
+        .then(employee => {
+            fillModalWindow(DELETE_TITLE, deleteAction, DELETE_BUTTON, employee);
+        });
     disableFields();
 }
 
 async function getStaff(orderBy) {
-    let urlForGet = GET_STAFF + "?order=" + orderBy;
-    console.log(urlForGet);
-    fetch(urlForGet).then(response => window.location.replace(response.url));
+    console.log(urlForGetStaff + orderBy);
+    fetch(urlForGetStaff + orderBy)
+        .then(response => response.text())
+        .then(html => {
+            console.log(html)
+            document.getElementById("staff_content").innerHTML = html
+        })
 }

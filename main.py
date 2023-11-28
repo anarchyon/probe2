@@ -5,13 +5,15 @@ from fastapi.templating import Jinja2Templates
 from fastapi.encoders import jsonable_encoder
 from starlette.responses import RedirectResponse
 from sqlalchemy.orm import Session
-from sqlalchemy import update
+from sqlalchemy import update, desc
 import json
 
-import models, schema
+import models, schema, utils
 from database import SessionLocal, engine
 
 app = FastAPI()
+
+sort_params = utils.SortParams()
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -27,15 +29,33 @@ def get_db_session():
 
 @app.get("/", response_class=HTMLResponse)
 def root(request: Request):
+    print("Вход в метод root()")
     return templates.TemplateResponse("index0.html", {"request": request})
 
 @app.get("/get-staff/", response_class=HTMLResponse)
 def get_staff(request: Request, db: Session = Depends(get_db_session), order: str = "staff_id"):
+    print("Вход в метод get_staff()")
     try:
         needed_sort_column = getattr(models.Staff, order)
     except:
         needed_sort_column = models.Staff.staff_id
-    staff = db.query(models.Staff).order_by(needed_sort_column).all()
+    print(f"needed_sort_column - {needed_sort_column}")
+    
+    if sort_params.sort_column != needed_sort_column: # type: ignore
+        sort_params.sort_column = needed_sort_column
+        sort_params.is_sort_asc = True
+    elif sort_params.is_sort_asc:
+        sort_params.is_sort_asc = False
+    else:
+        sort_params.is_sort_asc = True
+    
+    print(f"sort_params.sort_column - {sort_params.sort_column}")
+    print(sort_params.is_sort_asc)
+    
+    if sort_params.is_sort_asc:
+        staff = db.query(models.Staff).order_by(sort_params.sort_column).all()
+    else:
+        staff = db.query(models.Staff).order_by(desc(sort_params.sort_column)).all()
     for employee in staff:
         employee.birthdate = employee.birthdate.strftime("%d-%m-%Y")
     return templates.TemplateResponse("index.html", {"request": request, "data": staff})
@@ -71,6 +91,7 @@ async def delete_employee(staff_id: int, db:Session = Depends(get_db_session)):
 async def get_person(staff_id: int, db: Session = Depends(get_db_session)):
     employee = db.query(models.Staff).get(staff_id)
     empl = jsonable_encoder(employee)
+    print(empl)
     return empl
 
 @app.post("/update/{staff_id}")
