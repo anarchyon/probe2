@@ -58,7 +58,7 @@ def get_staff(request: Request, db: Session = Depends(get_db_session), order: st
         staff = db.query(models.Staff).order_by(desc(sort_params.sort_column)).all()
     for employee in staff:
         employee.birthdate = employee.birthdate.strftime("%d-%m-%Y")
-    return templates.TemplateResponse("index.html", {"request": request, "data": staff})
+    return templates.TemplateResponse("table.html", {"request": request, "data": staff})
 
 @app.post("/add")
 async def add_employee(db: Session = Depends(get_db_session), 
