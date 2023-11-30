@@ -10,6 +10,56 @@
             <h1>БД сотрудников</h1>
             <button class="btn btn-primary" type="button" onclick="getStaff('staff_id')">Получить список сотрудников</button>    
         </div>
+
+        <div class="modal fade" id="modalWindow" data-bs-backdrop="static" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"  id="modalTitle"></h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="action" action="" method="POST" enctype="application/x-www-form-urlencoded">
+                            <div class="row mt-sm-3">
+                                <div class="col-md-4" align="right">
+                                    <label for="first_name"><b>Имя:</b></label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="first_name" name="first_name">
+                                </div>
+                                <div class="col-md-4" align="right">
+                                    <label for="last_name"><b>Фамилия:</b></label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="last_name" name="last_name">
+                                </div>
+                                <div class="col-md-4" align="right">
+                                    <label for="address">Адрес:</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="address" name="address">
+                                </div>
+                                <div class="col-md-4" align="right">
+                                    <label for="birthdate">Дата рождения:</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="date" id="birthdate" name="birthdate">
+                                </div>
+                            </div>
+                            <div class="row mt-sm-5">
+                                <div class="col-md-12 d-flex justify-content-end">
+                                    <button id="buttonAccept" type="submit" class="btn btn-outline-primary">Сохранить</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal" id="modalClose">Закрыть</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </body>
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

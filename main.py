@@ -35,10 +35,12 @@ def root(request: Request):
 @app.get("/get-staff/", response_class=HTMLResponse)
 def get_staff(request: Request, db: Session = Depends(get_db_session), order: str = "staff_id"):
     print("Вход в метод get_staff()")
+    print(request.base_url)
+    print(type(db))
     try:
-        needed_sort_column = getattr(models.Staff, order)
+        needed_sort_column = getattr(models.Staff_DB, order)
     except:
-        needed_sort_column = models.Staff.staff_id
+        needed_sort_column = models.Staff_DB.staff_id
     print(f"needed_sort_column - {needed_sort_column}")
     
     if sort_params.sort_column != needed_sort_column: # type: ignore
@@ -53,60 +55,45 @@ def get_staff(request: Request, db: Session = Depends(get_db_session), order: st
     print(sort_params.is_sort_asc)
     
     if sort_params.is_sort_asc:
-        staff = db.query(models.Staff).order_by(sort_params.sort_column).all()
+        staff = db.query(models.Staff_DB).order_by(sort_params.sort_column).all()
     else:
-        staff = db.query(models.Staff).order_by(desc(sort_params.sort_column)).all()
+        staff = db.query(models.Staff_DB).order_by(desc(sort_params.sort_column)).all()
     for employee in staff:
         employee.birthdate = employee.birthdate.strftime("%d-%m-%Y")
     return templates.TemplateResponse("table.html", {"request": request, "data": staff})
 
 @app.post("/add")
-async def add_employee(db: Session = Depends(get_db_session), 
-                 first_name = Form(...),
-                 last_name = Form(...),
-                 address = Form(...),
-                 birthdate = Form(...),
-                 ):
-    employee = models.Staff(
-                        first_name = first_name,
-                        last_name = last_name,
-                        address = address,
-                        birthdate = birthdate
-                        )
-    db.add(employee)
+async def add_employee(employee: schema.Staff, db: Session = Depends(get_db_session)):
+    print("Вход в метод add_employee")
+    added_employee = models.Staff_DB(
+                            first_name=employee.first_name,
+                            last_name=employee.last_name,
+                            address=employee.address, 
+                            birthdate=employee.birthdate)
+    print(added_employee)
+    db.add(added_employee)
     db.commit()
-    db.refresh(employee)
-    response = RedirectResponse("/get-staff", status_code=303)
-    return response
+    db.refresh(added_employee)
 
 @app.post("/delete/{staff_id}")
 async def delete_employee(staff_id: int, db:Session = Depends(get_db_session)):
-    deleted_employee = db.query(models.Staff).get(staff_id)
+    deleted_employee = db.query(models.Staff_DB).get(staff_id)
     db.delete(deleted_employee)
     db.commit()
-    response = RedirectResponse("/get-staff", status_code=303)
-    return response
 
 @app.get("/get/{staff_id}")
 async def get_person(staff_id: int, db: Session = Depends(get_db_session)):
-    employee = db.query(models.Staff).get(staff_id)
+    employee = db.query(models.Staff_DB).get(staff_id)
     empl = jsonable_encoder(employee)
     print(empl)
     return empl
 
 @app.post("/update/{staff_id}")
-async def update_employee(staff_id: int, db: Session = Depends(get_db_session),
-                            first_name = Form(...),
-                            last_name = Form(...),
-                            address = Form(...),
-                            birthdate = Form(...),
-                            ):
-    updated_employee: models.Staff = db.query(models.Staff).get(staff_id) # type: ignore
-    updated_employee.first_name = first_name
-    updated_employee.last_name = last_name
-    updated_employee.address = address
-    updated_employee.birthdate = birthdate
+async def update_employee(staff_id: int, employee: schema.Staff, db: Session = Depends(get_db_session)):
+    updated_employee: models.Staff_DB = db.query(models.Staff_DB).get(staff_id) # type: ignore
+    updated_employee.first_name = employee.first_name
+    updated_employee.last_name = employee.last_name
+    updated_employee.address = employee.address
+    updated_employee.birthdate = employee.birthdate
     db.commit()
     db.refresh(updated_employee)
-    response = RedirectResponse("/get-staff", status_code=303)
-    return response
