@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.encoders import jsonable_encoder
 from starlette.responses import RedirectResponse
 from sqlalchemy.orm import Session
-from sqlalchemy import update, desc
+from sqlalchemy import update, select, desc
 import json
 
 import models, schema, utils
@@ -34,14 +34,10 @@ def root(request: Request):
 
 @app.get("/get-staff/", response_class=HTMLResponse)
 def get_staff(request: Request, db: Session = Depends(get_db_session), order: str = "staff_id"):
-    print("Вход в метод get_staff()")
-    print(request.base_url)
-    print(type(db))
     try:
         needed_sort_column = getattr(models.Staff_DB, order)
     except:
         needed_sort_column = models.Staff_DB.staff_id
-    print(f"needed_sort_column - {needed_sort_column}")
     
     if sort_params.sort_column != needed_sort_column: # type: ignore
         sort_params.sort_column = needed_sort_column
@@ -50,9 +46,6 @@ def get_staff(request: Request, db: Session = Depends(get_db_session), order: st
         sort_params.is_sort_asc = False
     else:
         sort_params.is_sort_asc = True
-    
-    print(f"sort_params.sort_column - {sort_params.sort_column}")
-    print(sort_params.is_sort_asc)
     
     if sort_params.is_sort_asc:
         staff = db.query(models.Staff_DB).order_by(sort_params.sort_column).all()
@@ -64,7 +57,6 @@ def get_staff(request: Request, db: Session = Depends(get_db_session), order: st
 
 @app.post("/add")
 async def add_employee(employee: schema.Staff, db: Session = Depends(get_db_session)):
-    print("Вход в метод add_employee")
     added_employee = models.Staff_DB(
                             first_name=employee.first_name,
                             last_name=employee.last_name,
@@ -85,7 +77,6 @@ async def delete_employee(staff_id: int, db:Session = Depends(get_db_session)):
 async def get_person(staff_id: int, db: Session = Depends(get_db_session)):
     employee = db.query(models.Staff_DB).get(staff_id)
     empl = jsonable_encoder(employee)
-    print(empl)
     return empl
 
 @app.post("/update/{staff_id}")
@@ -97,3 +88,20 @@ async def update_employee(staff_id: int, employee: schema.Staff, db: Session = D
     updated_employee.birthdate = employee.birthdate
     db.commit()
     db.refresh(updated_employee)
+
+@app.get("/search")
+def search_employee(request: Request, db: Session = Depends(get_db_session), 
+                    first_name: str | None = None, 
+                    last_name: str | None = None,
+                    address: str | None = None,
+                    ):
+    first_name = f"%{first_name}%"
+    last_name = f"%{last_name}%"
+    address = f"%{address}%"
+    employeeOrStaff = db.query(models.Staff_DB).\
+                                filter(models.Staff_DB.first_name.ilike(first_name),\
+                                       models.Staff_DB.last_name.ilike(last_name),\
+                                        models.Staff_DB.address.ilike(address)).\
+                                all()
+    response = templates.TemplateResponse("tableSearch.html", {"request": request, "searched_staff": employeeOrStaff})
+    return response

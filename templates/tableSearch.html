@@ -1,18 +1,19 @@
 <div>
-    <h1>Список сотрудников</h1>
+    <h1>Результаты поиска</h1>
     <button type="button" class="btn btn-outline-primary" 
-    data-bs-toggle="modal" data-bs-target="#modalSearch">Поиск</button>
+    data-bs-toggle="modal" data-bs-target="#modalSearch">Новый поиск</button>
+    <button class="btn btn-outline-primary" type="button" onclick="getStaff('staff_id')">Вернуться к списку сотрудников</button>    
 </div>
 <table border="1" cellpadding="10">
     <tr>
-        <th onclick="getStaff('staff_id')">ID</th>
-        <th onclick="getStaff('first_name')">Имя</th>
-        <th onclick="getStaff('last_name')">Фамилия</th>
-        <th onclick="getStaff('address')">Адрес</th>
-        <th onclick="getStaff('birthdate')">Дата рождения</th>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Адрес</th>
+        <th>Дата рождения</th>
         <th colspan="2" align="center">Действия</th>
     </tr>
-{% for employee in data%}
+{% for employee in searched_staff%}
     <tr>
         <td>{{employee.staff_id}}</td>
         <td>{{employee.first_name}}</td>
@@ -32,7 +33,3 @@
     </tr>
 {% endfor %}
 </table>
-<p></p>
-<button type="button" class="btn btn-outline-primary" 
-        data-bs-toggle="modal" data-bs-target="#modalWindow" 
-        onclick="addEmployee()">Добавить нового сотрудника</button>

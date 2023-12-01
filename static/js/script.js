@@ -89,7 +89,7 @@ async function getStaff(orderBy) {
     fetch(urlForGetStaff + orderBy)
         .then(response => response.text())
         .then(html => {
-            document.getElementById("staff_content").innerHTML = html
+            document.getElementById('staff_content').innerHTML = html
         })
 }
 
@@ -154,7 +154,7 @@ function giveAlert() {
     }
 }
 
-async function handleFormSubmit(event){
+async function handleActionSubmit(event){
     event.preventDefault();
 
     let {elements} = form;
@@ -177,5 +177,52 @@ async function handleFormSubmit(event){
     }
 }
 
-let form = document.getElementById("action");
-form.addEventListener('submit', handleFormSubmit);
+let form = document.getElementById('action');
+form.addEventListener('submit', handleActionSubmit);
+
+function sendSearchData(pathSearch) {
+    fetch(pathSearch)
+        .then(response => response.text())
+        .then(html => document.getElementById('staff_content').innerHTML = html);
+    
+}
+
+function createSearchPath(searchData) {
+    let pathSearch = '/search';
+    let i = 0;
+    for(const searchKey in searchData) {
+        if(i === 0) {
+            pathSearch += "?";
+        } else {
+            pathSearch += "&";
+        }
+        i++;
+        pathSearch += searchKey + "=" + searchData[searchKey];
+    }
+    return pathSearch;
+}
+
+function clearFormFields() {
+    document.getElementById('fname').value = '';
+    document.getElementById('lname').value = '';
+    document.getElementById('addr').value = '';
+}
+
+function handleSearchSubmit(event) {
+    event.preventDefault();
+
+    let { elements } = formSearch;
+    let searchData = {};
+    Array.from(elements)
+        .filter(item => !!item.name)
+        .map(element => {
+            searchData[element.name] = element.value;
+        })
+    let pathSearch = createSearchPath(searchData)
+    sendSearchData(pathSearch);
+    clearFormFields();
+    document.getElementById('modalClose2').click();
+}
+
+let formSearch = document.getElementById('search');
+formSearch.addEventListener('submit', handleSearchSubmit);
