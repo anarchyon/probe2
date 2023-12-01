@@ -6,19 +6,24 @@
 <table border="1" cellpadding="10">
     <tr>
         <th onclick="getStaff('staff_id')">ID</th>
+        <td id="sort_staff_id"><!--<img id="sortImg" src="{{ url_for('static', path='/images/arrow-up.png') }}">--></td>
         <th onclick="getStaff('first_name')">Имя</th>
+        <td id="sort_first_name"></td>
         <th onclick="getStaff('last_name')">Фамилия</th>
+        <td id="sort_last_name"></td>
         <th onclick="getStaff('address')">Адрес</th>
+        <td id="sort_address"></td>
         <th onclick="getStaff('birthdate')">Дата рождения</th>
+        <td id="sort_birthdate"></td>
         <th colspan="2" align="center">Действия</th>
     </tr>
 {% for employee in data%}
     <tr>
-        <td>{{employee.staff_id}}</td>
-        <td>{{employee.first_name}}</td>
-        <td>{{employee.last_name}}</td>
-        <td>{{employee.address}}</td>
-        <td>{{employee.birthdate}}</td>
+        <td colspan="2">{{employee.staff_id}}</td>
+        <td colspan="2">{{employee.first_name}}</td>
+        <td colspan="2">{{employee.last_name}}</td>
+        <td colspan="2">{{employee.address}}</td>
+        <td colspan="2">{{employee.birthdate}}</td>
         <td>
             <button type="button" class="btn btn-outline-dark btn-sm" 
                     data-bs-toggle="modal" data-bs-target="#modalWindow" 

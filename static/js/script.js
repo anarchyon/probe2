@@ -7,8 +7,9 @@ const DELETE_ACTION = "/delete/";
 const ADD_BUTTON = "Добавить сотрудника";
 const EDIT_BUTTON = "Обновить информацию";
 const DELETE_BUTTON = "Удалить сотрудника";
-const urlForGetStaff = "/get-staff/?order=";
+const urlForGetStaff = "/get-staff/?sort_column=";
 const urlForGet = "/get/";
+const attrStaffId = 'staff_id';
 const attrFirstName = 'first_name';
 const attrLastName = 'last_name';
 const attrAddress = 'address';
@@ -19,8 +20,12 @@ const add = 'add';
 const update = 'update';
 const deleteAction = 'delete';
 
+let isSortOrderAsc = false;
+let sortColumn = attrStaffId;
 let actualAction = '';
 let pathAction = '';
+let pathSort = '';
+let previousSort = '';
 
 function enableFields() {
     document.getElementById(attrFirstName).disabled = false;
@@ -78,24 +83,33 @@ async function editEmployee(staff_id) {
 async function deleteEmployee(staff_id) {
     actualAction = deleteAction;
     pathAction = DELETE_ACTION + staff_id;
-    getEmployee(staff_id)
+    getEmployee(sortColumn)
         .then(employee => {
             fillModalWindow(DELETE_TITLE, DELETE_BUTTON, employee);
         });
     disableFields();
 }
 
+function setSortParams(orderBy) {
+    if (orderBy !== sortColumn) {
+        previousSort = sortColumn;
+        sortColumn = orderBy;
+        isSortOrderAsc = true;
+    } else {
+        isSortOrderAsc = !isSortOrderAsc;
+    }
+    pathSort = urlForGetStaff + sortColumn + '&is_sort_order_asc=' + isSortOrderAsc;
+}
+
 async function getStaff(orderBy) {
-    fetch(urlForGetStaff + orderBy)
+    setSortParams(orderBy);
+    fetch(pathSort)
         .then(response => response.text())
-        .then(html => {
-            document.getElementById('staff_content').innerHTML = html
-        })
+        .then(html => document.getElementById('staff_content').innerHTML = html)
 }
 
 function checkdata(data) {
     let isDataOk = true;
-    console.log(data);
     for(const key in data) {
         switch(key) {
             case attrFirstName:
@@ -111,7 +125,6 @@ function checkdata(data) {
                 }
                 break;
             case attrBirthdate:
-                console.log(data[key]);
                 if (data[key] !== '') {
                     birthdateEmployee = new Date(data[key]);
                     currentDate = new Date();

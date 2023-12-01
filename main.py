@@ -13,8 +13,6 @@ from database import SessionLocal, engine
 
 app = FastAPI()
 
-sort_params = utils.SortParams()
-
 models.Base.metadata.create_all(bind=engine)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -33,27 +31,17 @@ def root(request: Request):
     return templates.TemplateResponse("index0.html", {"request": request})
 
 @app.get("/get-staff/", response_class=HTMLResponse)
-def get_staff(request: Request, db: Session = Depends(get_db_session), order: str = "staff_id"):
+def get_staff(request: Request, db: Session = Depends(get_db_session), sort_column: str = "staff_id", is_sort_order_asc: bool = True):
     try:
-        needed_sort_column = getattr(models.Staff_DB, order)
+        needed_sort_column = getattr(models.Staff_DB, sort_column)
     except:
         needed_sort_column = models.Staff_DB.staff_id
     
-    if sort_params.sort_column != needed_sort_column: # type: ignore
-        sort_params.sort_column = needed_sort_column
-        sort_params.is_sort_asc = True
-    elif sort_params.is_sort_asc:
-        sort_params.is_sort_asc = False
+    if is_sort_order_asc:
+        staff = db.query(models.Staff_DB).order_by(needed_sort_column).all()
     else:
-        sort_params.is_sort_asc = True
-    
-    if sort_params.is_sort_asc:
-        staff = db.query(models.Staff_DB).order_by(sort_params.sort_column).all()
-    else:
-        staff = db.query(models.Staff_DB).order_by(desc(sort_params.sort_column)).all()
-    for employee in staff:
-        employee.birthdate = employee.birthdate.strftime("%d-%m-%Y")
-    return templates.TemplateResponse("table.html", {"request": request, "data": staff})
+        staff = db.query(models.Staff_DB).order_by(desc(needed_sort_column)).all()
+    return templates.TemplateResponse("table.html", {"request": request, "data": changeDateForShow(staff)})
 
 @app.post("/add")
 async def add_employee(employee: schema.Staff, db: Session = Depends(get_db_session)):
@@ -103,5 +91,11 @@ def search_employee(request: Request, db: Session = Depends(get_db_session),
                                        models.Staff_DB.last_name.ilike(last_name),\
                                         models.Staff_DB.address.ilike(address)).\
                                 all()
-    response = templates.TemplateResponse("tableSearch.html", {"request": request, "searched_staff": employeeOrStaff})
+    
+    response = templates.TemplateResponse("tableSearch.html", {"request": request, "searched_staff": changeDateForShow(employeeOrStaff)})
     return response
+
+def changeDateForShow(staff):
+    for employee in staff:
+        employee.birthdate = employee.birthdate.strftime("%d-%m-%Y")
+    return staff
