@@ -1,0 +1,35 @@
+<div>
+    <h1>Результаты поиска</h1>
+    <button type="button" class="btn btn-outline-primary" 
+    data-bs-toggle="modal" data-bs-target="#modalSearch">Новый поиск</button>
+    <button class="btn btn-outline-primary" type="button" onclick="getStaff('staff_id')">Вернуться к списку сотрудников</button>    
+</div>
+<table border="1" cellpadding="10">
+    <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Адрес</th>
+        <th>Дата рождения</th>
+        <th colspan="2" align="center">Действия</th>
+    </tr>
+{% for employee in searched_staff%}
+    <tr>
+        <td>{{employee.staff_id}}</td>
+        <td>{{employee.first_name}}</td>
+        <td>{{employee.last_name}}</td>
+        <td>{{employee.address}}</td>
+        <td>{{employee.birthdate}}</td>
+        <td>
+            <button type="button" class="btn btn-outline-dark btn-sm" 
+                    data-bs-toggle="modal" data-bs-target="#modalWindow" 
+                    onclick="editEmployee('{{employee.staff_id}}')">Редактировать</button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-outline-danger btn-sm" 
+                    data-bs-toggle="modal" data-bs-target="#modalWindow" 
+                    onclick="deleteEmployee('{{employee.staff_id}}')">Удалить</button>
+        </td>
+    </tr>
+{% endfor %}
+</table>

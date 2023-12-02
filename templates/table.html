@@ -1,0 +1,43 @@
+<div>
+    <h1>Список сотрудников</h1>
+    <button type="button" class="btn btn-outline-primary" 
+    data-bs-toggle="modal" data-bs-target="#modalSearch">Поиск</button>
+</div>
+<table border="1" cellpadding="10">
+    <tr>
+        <th onclick="getStaff('staff_id')">ID</th>
+        <td id="sort_staff_id"></td>
+        <th onclick="getStaff('first_name')">Имя</th>
+        <td id="sort_first_name"></td>
+        <th onclick="getStaff('last_name')">Фамилия</th>
+        <td id="sort_last_name"></td>
+        <th onclick="getStaff('address')">Адрес</th>
+        <td id="sort_address"></td>
+        <th onclick="getStaff('birthdate')">Дата рождения</th>
+        <td id="sort_birthdate"></td>
+        <th colspan="2" align="center">Действия</th>
+    </tr>
+{% for employee in data%}
+    <tr>
+        <td colspan="2">{{employee.staff_id}}</td>
+        <td colspan="2">{{employee.first_name}}</td>
+        <td colspan="2">{{employee.last_name}}</td>
+        <td colspan="2">{{employee.address}}</td>
+        <td colspan="2">{{employee.birthdate}}</td>
+        <td>
+            <button type="button" class="btn btn-outline-dark btn-sm" 
+                    data-bs-toggle="modal" data-bs-target="#modalWindow" 
+                    onclick="editEmployee('{{employee.staff_id}}')">Редактировать</button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-outline-danger btn-sm" 
+                    data-bs-toggle="modal" data-bs-target="#modalWindow" 
+                    onclick="deleteEmployee('{{employee.staff_id}}')">Удалить</button>
+        </td>
+    </tr>
+{% endfor %}
+</table>
+<p></p>
+<button type="button" class="btn btn-outline-primary" 
+        data-bs-toggle="modal" data-bs-target="#modalWindow" 
+        onclick="addEmployee()">Добавить нового сотрудника</button>
