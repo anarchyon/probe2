@@ -19,13 +19,16 @@ const alertWrongAge = 'Сотрудник должен быть совершен
 const add = 'add';
 const update = 'update';
 const deleteAction = 'delete';
+const labelSortUp = '\u21e7';
+const labelSortDown = '\u21e9';
 
 let isSortOrderAsc = false;
 let sortColumn = attrStaffId;
+let pathSort = '';
+
 let actualAction = '';
 let pathAction = '';
-let pathSort = '';
-let previousSort = '';
+// let previousSort = '';
 
 function enableFields() {
     document.getElementById(attrFirstName).disabled = false;
@@ -92,7 +95,6 @@ async function deleteEmployee(staff_id) {
 
 function setSortParams(orderBy) {
     if (orderBy !== sortColumn) {
-        previousSort = sortColumn;
         sortColumn = orderBy;
         isSortOrderAsc = true;
     } else {
@@ -101,11 +103,26 @@ function setSortParams(orderBy) {
     pathSort = urlForGetStaff + sortColumn + '&is_sort_order_asc=' + isSortOrderAsc;
 }
 
+function clearSortHeaders() {
+    let tableHeaders = document.querySelectorAll('td[id\u005e="sort_"]')
+    console.log(tableHeaders);
+    tableHeaders.forEach(element => element.innerHTML = '')
+}
+
 async function getStaff(orderBy) {
     setSortParams(orderBy);
     fetch(pathSort)
         .then(response => response.text())
         .then(html => document.getElementById('staff_content').innerHTML = html)
+        .then(() => {
+            let hereLabelSort = document.querySelector('#sort_'+sortColumn);
+            console.log(hereLabelSort, sortColumn, isSortOrderAsc, labelSortUp, labelSortDown);
+            if (isSortOrderAsc) {
+                hereLabelSort.innerHTML = labelSortUp;
+            } else {
+                hereLabelSort.innerHTML = labelSortDown;
+            }
+        })
 }
 
 function checkdata(data) {
