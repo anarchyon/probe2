@@ -94,39 +94,29 @@ async function deleteEmployee(staff_id) {
 }
 
 function setSortParams(orderBy) {
-    console.log("Вызов setSortParams: " + orderBy);
-    console.log(isSortOrderAsc);
     if (orderBy) {
-        console.log("orderBy не равен null или undefined");
         if (orderBy !== sortColumn) {
             sortColumn = orderBy;
             isSortOrderAsc = true;
         } else {
-            console.log("orderBy не поменялся")
             isSortOrderAsc = !isSortOrderAsc;
-            console.log(isSortOrderAsc);
         }
     }
     pathSort = urlForGetStaff + '?sort_column=' + sortColumn + '&is_sort_order_asc=' + isSortOrderAsc;
-    console.log(pathSort);
 }
 
 function clearSortHeaders() {
     let tableHeaders = document.querySelectorAll('td[id\u005e="sort_"]')
-    console.log(tableHeaders);
     tableHeaders.forEach(element => element.innerHTML = '')
 }
 
 async function getStaff(orderBy) {
-    console.log("Вызов getStaff: " + orderBy);
     setSortParams(orderBy);
-    console.log(sortColumn);
     fetch(pathSort)
         .then(response => response.text())
         .then(html => document.getElementById('staff_content').innerHTML = html)
         .then(() => {
             let hereLabelSort = document.querySelector('#sort_'+sortColumn);
-            console.log(hereLabelSort, sortColumn, isSortOrderAsc, labelSortUp, labelSortDown);
             if (isSortOrderAsc) {
                 hereLabelSort.innerHTML = labelSortUp;
             } else {
@@ -212,7 +202,6 @@ async function handleActionSubmit(event){
             alert('Произошла ошибка');
         }
         document.getElementById('modalClose').click();
-        console.log(response.status);
         getStaff();
     }
 }
