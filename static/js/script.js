@@ -7,7 +7,7 @@ const DELETE_ACTION = "/delete/";
 const ADD_BUTTON = "Добавить сотрудника";
 const EDIT_BUTTON = "Обновить информацию";
 const DELETE_BUTTON = "Удалить сотрудника";
-const urlForGetStaff = "/get-staff/?sort_column=";
+const urlForGetStaff = "/get-staff/";
 const urlForGet = "/get/";
 const attrStaffId = 'staff_id';
 const attrFirstName = 'first_name';
@@ -86,7 +86,7 @@ async function editEmployee(staff_id) {
 async function deleteEmployee(staff_id) {
     actualAction = deleteAction;
     pathAction = DELETE_ACTION + staff_id;
-    getEmployee(sortColumn)
+    getEmployee(staff_id)
         .then(employee => {
             fillModalWindow(DELETE_TITLE, DELETE_BUTTON, employee);
         });
@@ -94,13 +94,21 @@ async function deleteEmployee(staff_id) {
 }
 
 function setSortParams(orderBy) {
-    if (orderBy !== sortColumn) {
-        sortColumn = orderBy;
-        isSortOrderAsc = true;
-    } else {
-        isSortOrderAsc = !isSortOrderAsc;
+    console.log("Вызов setSortParams: " + orderBy);
+    console.log(isSortOrderAsc);
+    if (orderBy) {
+        console.log("orderBy не равен null или undefined");
+        if (orderBy !== sortColumn) {
+            sortColumn = orderBy;
+            isSortOrderAsc = true;
+        } else {
+            console.log("orderBy не поменялся")
+            isSortOrderAsc = !isSortOrderAsc;
+            console.log(isSortOrderAsc);
+        }
     }
-    pathSort = urlForGetStaff + sortColumn + '&is_sort_order_asc=' + isSortOrderAsc;
+    pathSort = urlForGetStaff + '?sort_column=' + sortColumn + '&is_sort_order_asc=' + isSortOrderAsc;
+    console.log(pathSort);
 }
 
 function clearSortHeaders() {
@@ -110,7 +118,9 @@ function clearSortHeaders() {
 }
 
 async function getStaff(orderBy) {
+    console.log("Вызов getStaff: " + orderBy);
     setSortParams(orderBy);
+    console.log(sortColumn);
     fetch(pathSort)
         .then(response => response.text())
         .then(html => document.getElementById('staff_content').innerHTML = html)

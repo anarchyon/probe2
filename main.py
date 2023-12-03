@@ -31,16 +31,28 @@ def root(request: Request):
     return templates.TemplateResponse("index0.html", {"request": request})
 
 @app.get("/get-staff/", response_class=HTMLResponse)
-def get_staff(request: Request, db: Session = Depends(get_db_session), sort_column: str = "staff_id", is_sort_order_asc: bool = True):
-    try:
-        needed_sort_column = getattr(models.Staff_DB, sort_column)
-    except:
-        needed_sort_column = models.Staff_DB.staff_id
-    
-    if is_sort_order_asc:
-        staff = db.query(models.Staff_DB).order_by(needed_sort_column).all()
+def get_staff(request: Request, db: Session = Depends(get_db_session), 
+              sort_column: str | None = None, is_sort_order_asc: bool | None = None
+              ):
+    print(f"sort_column = {sort_column}, is_sort_order_asc = {is_sort_order_asc}")
+    staff = None
+    print(staff)
+    if sort_column == None:
+        staff = db.query(models.Staff_DB).all()
     else:
-        staff = db.query(models.Staff_DB).order_by(desc(needed_sort_column)).all()
+        try:
+            needed_sort_column = getattr(models.Staff_DB, sort_column)
+        except:
+            needed_sort_column = models.Staff_DB.staff_id
+        if is_sort_order_asc:
+            print(f"is_sort_order_asc = {is_sort_order_asc}")
+            print(f"needed_sort_column = {needed_sort_column}")
+            staff = db.query(models.Staff_DB).order_by(needed_sort_column).all()
+        else:
+            staff = db.query(models.Staff_DB).order_by(desc(needed_sort_column)).all()
+            print(f"is_sort_order_asc = {is_sort_order_asc}")
+            print(f"needed_sort_column = {needed_sort_column}")
+    
     return templates.TemplateResponse("table.html", {"request": request, "data": changeDateForShow(staff)})
 
 @app.post("/add")
@@ -96,6 +108,7 @@ def search_employee(request: Request, db: Session = Depends(get_db_session),
     return response
 
 def changeDateForShow(staff):
-    for employee in staff:
-        employee.birthdate = employee.birthdate.strftime("%d-%m-%Y")
+    if staff:
+        for employee in staff:
+            employee.birthdate = employee.birthdate.strftime("%d-%m-%Y")
     return staff
