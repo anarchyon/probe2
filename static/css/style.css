@@ -15,3 +15,7 @@ img {
 .card {
     border-radius: 20px;
 }
+
+.changeCursor {
+    cursor: pointer;
+}
